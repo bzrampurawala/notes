@@ -17,11 +17,11 @@ public class Note {
 
     private int priority;
 
-    public Note(String title, String description, int priority) {
+    public Note(String title, String description, int priority, boolean isComplete) {
         this.title = title;
         this.description = description;
         this.priority = priority;
-        this.isComplete = false;
+        this.isComplete = isComplete;
     }
 
     public void setId(int id) {
