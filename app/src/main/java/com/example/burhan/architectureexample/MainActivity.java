@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.*;
 public class MainActivity extends AppCompatActivity {
 
     public static final int ADD_NOTE_REQUEST = 1;
+    public static final int EDIT_NOTE_REQUEST = 2;
 
     private NoteViewModel noteViewModel;
 
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         buttonAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddNote.class);
+                Intent intent = new Intent(MainActivity.this, AddEditNote.class);
                 startActivityForResult(intent, ADD_NOTE_REQUEST);
             }
         });
@@ -61,20 +62,58 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Note deleted", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
+
+        adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Note note) {
+                Intent intent = new Intent(MainActivity.this, AddEditNote.class);
+                intent.putExtra(AddEditNote.EXTRA_ID, note.getId());
+                intent.putExtra(AddEditNote.EXTRA_TITLE, note.getTitle());
+                intent.putExtra(AddEditNote.EXTRA_DESCRIPTION, note.getDescription());
+                intent.putExtra(AddEditNote.EXTRA_PRIORITY, note.getPriority());
+                intent.putExtra(AddEditNote.IS_COMPLETE,note.getIsComplete());
+                startActivityForResult(intent, EDIT_NOTE_REQUEST);
+            }
+        });
+        adapter.setOnCheckBoxClickListener(new NoteAdapter.OnCheckBoxClickListener() {
+            @Override
+            public void onCheckBoxClicked(int id,boolean val) {
+                noteViewModel.setIsComplete(id, val);
+            }
+        });
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK) {
-            String title = data.getStringExtra(AddNote.EXTRA_TITLE);
-            String description = data.getStringExtra(AddNote.EXTRA_DESCRIPTION);
-            int priority = data.getIntExtra(AddNote.EXTRA_PRIORITY, 1);
+            String title = data.getStringExtra(AddEditNote.EXTRA_TITLE);
+            String description = data.getStringExtra(AddEditNote.EXTRA_DESCRIPTION);
+            int priority = data.getIntExtra(AddEditNote.EXTRA_PRIORITY, 1);
 
             Note note = new Note(title, description, priority,false);
             noteViewModel.insert(note);
 
             Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
+            int id = data.getIntExtra(AddEditNote.EXTRA_ID, -1);
+
+            if (id == -1) {
+                Toast.makeText(this, "Note can't be updated", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String title = data.getStringExtra(AddEditNote.EXTRA_TITLE);
+            String description = data.getStringExtra(AddEditNote.EXTRA_DESCRIPTION);
+            Boolean isComplete = data.getBooleanExtra(AddEditNote.IS_COMPLETE,false);
+            int priority = data.getIntExtra(AddEditNote.EXTRA_PRIORITY, 1);
+
+            Note note = new Note(title, description, priority, isComplete);
+            note.setId(id);
+            noteViewModel.update(note);
+
+            Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Note not saved", Toast.LENGTH_SHORT).show();
         }
