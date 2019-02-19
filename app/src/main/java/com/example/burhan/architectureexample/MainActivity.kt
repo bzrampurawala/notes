@@ -3,14 +3,15 @@ package com.example.burhan.architectureexample
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
 import android.widget.Toast
+
+import kotlinx.android.synthetic.main.activity_main.*
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NoteAdapter.OnCheckChanged, NoteAdapter.OnItemClick{
 
     private lateinit var noteViewModel: NoteViewModel
     companion object {
@@ -22,19 +23,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val buttonAddNote = findViewById<Button>(R.id.button_add_note)
-        buttonAddNote.setOnClickListener{
+        addNoteButton.setOnClickListener{
                 val intent = Intent(this@MainActivity, AddEditNote::class.java)
                 startActivityForResult(intent, ADD_NOTE_REQUEST)
         }
-
-        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
 
-        val adapter = NoteAdapter()
+        val adapter = NoteAdapter(this,this)
         recyclerView.adapter = adapter
 
+        noteViewModel = NoteViewModel(application)
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel::class.java)
         noteViewModel.allNotes.observe(this, Observer<List<Note>>{ notes ->adapter.submitList(notes) })
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0,
@@ -48,24 +47,6 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this@MainActivity, "Note deleted", Toast.LENGTH_SHORT).show()
             }
         }).attachToRecyclerView(recyclerView)
-
-        adapter.setOnItemClickListener(object : NoteAdapter.OnItemClickListener{
-            override fun onItemClick(note: Note) {
-                val intent = Intent(this@MainActivity, AddEditNote::class.java)
-                intent.putExtra(AddEditNote.EXTRA_ID, note.id)
-                intent.putExtra(AddEditNote.EXTRA_TITLE, note.title)
-                intent.putExtra(AddEditNote.EXTRA_DESCRIPTION, note.description)
-                intent.putExtra(AddEditNote.EXTRA_PRIORITY, note.priority)
-                intent.putExtra(AddEditNote.IS_COMPLETE, note.isComplete)
-                startActivityForResult(intent, EDIT_NOTE_REQUEST)
-            }
-        })
-        adapter.setOnCheckBoxClickListener(object : NoteAdapter.OnCheckBoxClickListener {
-            override fun onCheckBoxClicked(id: Int, checked: Boolean) {
-                noteViewModel.setIsComplete(id, checked)
-            }
-        })
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -118,5 +99,18 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+    override fun onClick(note: Note) {
+        val intent = Intent(this@MainActivity, AddEditNote::class.java)
+        intent.putExtra(AddEditNote.EXTRA_ID, note.id)
+        intent.putExtra(AddEditNote.EXTRA_TITLE, note.title)
+        intent.putExtra(AddEditNote.EXTRA_DESCRIPTION, note.description)
+        intent.putExtra(AddEditNote.EXTRA_PRIORITY, note.priority)
+        intent.putExtra(AddEditNote.IS_COMPLETE, note.isComplete)
+        startActivityForResult(intent, EDIT_NOTE_REQUEST)
+    }
+
+    override fun setIsComplete(id: Int, checked: Boolean) {
+        noteViewModel.setIsComplete(id, checked)
     }
 }

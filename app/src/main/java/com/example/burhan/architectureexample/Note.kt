@@ -7,9 +7,5 @@ import androidx.room.PrimaryKey
 class Note(val title: String, val description: String, val priority: Int, val isComplete: Boolean) {
 
     @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
-        set(value){
-            field = value
-        }
-        get() = field
+    var id: Int = 0
 }

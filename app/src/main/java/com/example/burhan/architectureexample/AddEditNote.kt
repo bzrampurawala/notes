@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 
+import kotlinx.android.synthetic.main.activity_add_note.*
+
 import androidx.appcompat.app.AppCompatActivity
 
 class AddEditNote : AppCompatActivity() {
@@ -16,19 +18,10 @@ class AddEditNote : AppCompatActivity() {
         const val IS_COMPLETE = "com.codinginflow.architectureexample.IS_COMPLETE"
     }
 
-    private lateinit var buttonSaveNote: Button
-    private lateinit var editTextTitle: EditText
-    private lateinit var editTextDescription: EditText
-    private lateinit var numberPickerPriority: NumberPicker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_note)
-
-        buttonSaveNote = findViewById(R.id.button_save_note)
-        editTextTitle = findViewById(R.id.edit_text_title)
-        editTextDescription = findViewById(R.id.edit_text_description)
-        numberPickerPriority = findViewById(R.id.number_picker_priority)
 
         numberPickerPriority.minValue = 1
         numberPickerPriority.maxValue = 10
