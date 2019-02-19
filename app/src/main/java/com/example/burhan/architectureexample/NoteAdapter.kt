@@ -1,12 +1,10 @@
 package com.example.burhan.architectureexample
 
 import android.view.*
-import android.widget.CheckBox
 import android.widget.CompoundButton
-import android.widget.RadioGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.*
 
+import kotlinx.android.synthetic.main.note_item.view.*
 
 class NoteAdapter(val onCheckChanged: OnCheckChanged, val onItemClick: OnItemClick) : ListAdapter<Note, NoteAdapter.NoteHolder>(DIFF_CALLBACK) {
 
@@ -23,15 +21,6 @@ class NoteAdapter(val onCheckChanged: OnCheckChanged, val onItemClick: OnItemCli
         holder.textViewDescription.text = currentNote.description
         holder.textViewPriority.text = currentNote.priority.toString()
         holder.checkboxIsComplete.isChecked = currentNote.isComplete
-//        holder.checkboxIsComplete.setOnClickListener {
-//            val checked = holder.checkboxIsComplete.isChecked
-//            if (position != RecyclerView.NO_POSITION)
-//                holder.checkBoxListener.onCheckBoxClicked(getItem(position).id!!, checked)
-//        }
-//        holder.itemView.setOnClickListener {
-//            if (position != RecyclerView.NO_POSITION)
-//                entireViewListener.onItemClick(getItem(position))
-//        }
     }
 
 
@@ -41,12 +30,11 @@ class NoteAdapter(val onCheckChanged: OnCheckChanged, val onItemClick: OnItemCli
 
     inner class NoteHolder(itemView: View, private val onCheckChanged: OnCheckChanged, private val onItemClick: OnItemClick) : RecyclerView.ViewHolder(itemView), CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
-        var currentNote: Note? = null
-            set(value) {field = value}
-        val textViewTitle: TextView = itemView.findViewById(R.id.text_view_title) as TextView
-        val textViewDescription: TextView = itemView.findViewById(R.id.text_view_description) as TextView
-        val textViewPriority: TextView = itemView.findViewById(R.id.text_view_priority) as TextView
-        val checkboxIsComplete: CheckBox = itemView.findViewById(R.id.checkbox_is_complete) as CheckBox
+        lateinit var currentNote: Note
+        val textViewTitle = itemView.text_view_title!!
+        val textViewDescription = itemView.text_view_description!!
+        val textViewPriority = itemView.text_view_priority!!
+        val checkboxIsComplete = itemView.checkbox_is_complete!!
         init {
             checkboxIsComplete.setOnCheckedChangeListener(this)
             itemView.setOnClickListener(this)
@@ -54,11 +42,11 @@ class NoteAdapter(val onCheckChanged: OnCheckChanged, val onItemClick: OnItemCli
 
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
             val checked = checkboxIsComplete.isChecked
-            onCheckChanged.setIsComplete(currentNote!!.id, checked)
+            onCheckChanged.setIsComplete(currentNote.id, checked)
         }
 
         override fun onClick(v: View?) {
-            onItemClick.onClick(currentNote!!)
+            onItemClick.onClick(currentNote)
         }
     }
 
