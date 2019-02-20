@@ -3,6 +3,7 @@ package com.example.burhan.architectureexample.repository
 import android.os.AsyncTask
 
 import androidx.lifecycle.LiveData
+import com.example.burhan.architectureexample.MainApplication
 import com.example.burhan.architectureexample.data.Note
 import com.example.burhan.architectureexample.db.NoteDao
 import com.example.burhan.architectureexample.view.mainactivity.MainActivity
@@ -16,7 +17,7 @@ class NoteRepository{
     val allNotes: LiveData<List<Note>>
 
     init {
-        MainActivity.applicationComponent.inject(this)
+        MainApplication.applicationComponent.inject(this)
         allNotes = noteDao.allNotes
     }
     fun insert(note: Note) {

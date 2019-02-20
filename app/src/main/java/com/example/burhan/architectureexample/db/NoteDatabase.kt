@@ -2,13 +2,13 @@ package com.example.burhan.architectureexample.db
 
 
 import androidx.room.*
+import com.example.burhan.architectureexample.MainApplication
 import com.example.burhan.architectureexample.data.Note
-import com.example.burhan.architectureexample.view.mainactivity.MainActivity
 
 @Database(entities = [Note::class], version = 1)
 abstract class NoteDatabase : RoomDatabase() {
     init {
-        MainActivity.applicationComponent.inject(this)
+        MainApplication.applicationComponent.inject(this)
     }
     abstract fun noteDao(): NoteDao
 

@@ -1,12 +1,9 @@
-package com.example.burhan.architectureexample.view
+package com.example.burhan.architectureexample.view.mainactivity
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.burhan.architectureexample.data.Note
 import com.example.burhan.architectureexample.repository.NoteRepository
-import com.example.burhan.architectureexample.view.mainactivity.MainActivity
 import javax.inject.Inject
 
 class NoteViewModel: ViewModel() {
@@ -17,7 +14,7 @@ class NoteViewModel: ViewModel() {
     val allNotes: LiveData<List<Note>>
 
     init {
-        MainActivity.applicationComponent.inject(this)
+        MainActivity.mainActivityComponent.inject(this)
         allNotes = repository.allNotes
     }
 

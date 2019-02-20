@@ -10,13 +10,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.*
+import com.example.burhan.architectureexample.MainApplication
+import com.example.burhan.architectureexample.MainApplication.Companion.applicationComponent
 import com.example.burhan.architectureexample.data.Note
 import com.example.burhan.architectureexample.R
-import com.example.burhan.architectureexample.di.AppComponent
-import com.example.burhan.architectureexample.di.DaggerAppComponent
+import com.example.burhan.architectureexample.di.DaggerApplicationComponent
 import com.example.burhan.architectureexample.view.addeditnoteactivity.AddEditNote
 import com.example.burhan.architectureexample.view.NoteAdapter
-import com.example.burhan.architectureexample.view.NoteViewModel
+import com.example.burhan.architectureexample.view.mainactivity.di.MainActivityComponent
+import com.example.burhan.architectureexample.view.mainactivity.di.MainActivityModule
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), NoteAdapter.OnCheckChanged, NoteAdapter.OnItemClick {
@@ -25,26 +27,23 @@ class MainActivity : AppCompatActivity(), NoteAdapter.OnCheckChanged, NoteAdapte
     lateinit var noteViewModel: NoteViewModel
 
     companion object {
+        lateinit var mainActivityComponent: MainActivityComponent
         const val ADD_NOTE_REQUEST = 1
         const val EDIT_NOTE_REQUEST = 2
-        lateinit var applicationComponent: AppComponent
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        applicationComponent = DaggerAppComponent
-                .builder()
-                .application(application)
-                .build()
-        applicationComponent.inject(this)
+
+        mainActivityComponent = MainApplication.applicationComponent.plus(MainActivityModule(this))
+
         addNoteButton.setOnClickListener {
             val intent = Intent(this@MainActivity, AddEditNote::class.java)
             startActivityForResult(intent, ADD_NOTE_REQUEST)
         }
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
-
         val adapter = NoteAdapter(this, this)
         recyclerView.adapter = adapter
         noteViewModel.allNotes.observe(this, Observer<List<Note>> { notes -> adapter.submitList(notes) })
