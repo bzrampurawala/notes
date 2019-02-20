@@ -1,8 +1,10 @@
-package com.example.burhan.architectureexample
+package com.example.burhan.architectureexample.view
 
 import android.view.*
 import android.widget.CompoundButton
 import androidx.recyclerview.widget.*
+import com.example.burhan.architectureexample.data.Note
+import com.example.burhan.architectureexample.R
 
 import kotlinx.android.synthetic.main.note_item.view.*
 
@@ -60,7 +62,7 @@ class NoteAdapter(val onCheckChanged: OnCheckChanged, val onItemClick: OnItemCli
 
     companion object {
 
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Note>() {
+         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Note>() {
             override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
                 return oldItem.id == newItem.id
             }

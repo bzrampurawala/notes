@@ -1,4 +1,4 @@
-package com.example.burhan.architectureexample
+package com.example.burhan.architectureexample.view.mainactivity
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,32 +10,44 @@ import kotlinx.android.synthetic.main.activity_main.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.*
+import com.example.burhan.architectureexample.data.Note
+import com.example.burhan.architectureexample.R
+import com.example.burhan.architectureexample.di.AppComponent
+import com.example.burhan.architectureexample.di.DaggerAppComponent
+import com.example.burhan.architectureexample.view.addeditnoteactivity.AddEditNote
+import com.example.burhan.architectureexample.view.NoteAdapter
+import com.example.burhan.architectureexample.view.NoteViewModel
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), NoteAdapter.OnCheckChanged, NoteAdapter.OnItemClick{
+class MainActivity : AppCompatActivity(), NoteAdapter.OnCheckChanged, NoteAdapter.OnItemClick {
 
-    private lateinit var noteViewModel: NoteViewModel
+    @Inject
+    lateinit var noteViewModel: NoteViewModel
+
     companion object {
         const val ADD_NOTE_REQUEST = 1
         const val EDIT_NOTE_REQUEST = 2
+        lateinit var applicationComponent: AppComponent
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        addNoteButton.setOnClickListener{
-                val intent = Intent(this@MainActivity, AddEditNote::class.java)
-                startActivityForResult(intent, ADD_NOTE_REQUEST)
+        applicationComponent = DaggerAppComponent
+                .builder()
+                .application(application)
+                .build()
+        applicationComponent.inject(this)
+        addNoteButton.setOnClickListener {
+            val intent = Intent(this@MainActivity, AddEditNote::class.java)
+            startActivityForResult(intent, ADD_NOTE_REQUEST)
         }
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
 
-        val adapter = NoteAdapter(this,this)
+        val adapter = NoteAdapter(this, this)
         recyclerView.adapter = adapter
-
-        noteViewModel = NoteViewModel(application)
-        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel::class.java)
-        noteViewModel.allNotes.observe(this, Observer<List<Note>>{ notes ->adapter.submitList(notes) })
+        noteViewModel.allNotes.observe(this, Observer<List<Note>> { notes -> adapter.submitList(notes) })
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -100,6 +112,7 @@ class MainActivity : AppCompatActivity(), NoteAdapter.OnCheckChanged, NoteAdapte
             else -> super.onOptionsItemSelected(item)
         }
     }
+
     override fun onClick(note: Note) {
         val intent = Intent(this@MainActivity, AddEditNote::class.java)
         intent.putExtra(AddEditNote.EXTRA_ID, note.id)

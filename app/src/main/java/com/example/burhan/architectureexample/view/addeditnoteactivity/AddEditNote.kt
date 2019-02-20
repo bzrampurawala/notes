@@ -1,4 +1,4 @@
-package com.example.burhan.architectureexample
+package com.example.burhan.architectureexample.view.addeditnoteactivity
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.widget.*
 import kotlinx.android.synthetic.main.activity_add_note.*
 
 import androidx.appcompat.app.AppCompatActivity
+import com.example.burhan.architectureexample.R
 
 class AddEditNote : AppCompatActivity() {
 

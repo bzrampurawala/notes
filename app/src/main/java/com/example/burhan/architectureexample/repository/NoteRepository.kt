@@ -1,17 +1,22 @@
-package com.example.burhan.architectureexample
+package com.example.burhan.architectureexample.repository
 
-import android.app.Application
 import android.os.AsyncTask
 
 import androidx.lifecycle.LiveData
+import com.example.burhan.architectureexample.data.Note
+import com.example.burhan.architectureexample.db.NoteDao
+import com.example.burhan.architectureexample.view.mainactivity.MainActivity
+import javax.inject.Inject
 
-class NoteRepository(application: Application) {
-    private val noteDao: NoteDao
+class NoteRepository{
+
+    @Inject
+    lateinit var noteDao: NoteDao
+
     val allNotes: LiveData<List<Note>>
 
     init {
-        val database = NoteDatabase.getInstance(application)
-        noteDao = database.noteDao()
+        MainActivity.applicationComponent.inject(this)
         allNotes = noteDao.allNotes
     }
     fun insert(note: Note) {

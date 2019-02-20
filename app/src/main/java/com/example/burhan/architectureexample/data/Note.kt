@@ -1,4 +1,4 @@
-package com.example.burhan.architectureexample
+package com.example.burhan.architectureexample.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

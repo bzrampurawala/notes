@@ -18,7 +18,8 @@ buildscript {
             'lifecycle'          : '2.1.0-alpha01',
             'material'           : '1.1.0-alpha02',
             'rx_java'            : '2.2.2',
-            'rx_kotlin'          : '2.3.0'
+            'rx_kotlin'          : '2.3.0',
+            'dagger'             : '2.19',
     ]
     
     repositories {

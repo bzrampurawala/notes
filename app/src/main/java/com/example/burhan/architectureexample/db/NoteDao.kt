@@ -1,11 +1,11 @@
-package com.example.burhan.architectureexample
+package com.example.burhan.architectureexample.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.burhan.architectureexample.data.Note
 
 @Dao
 interface NoteDao {
-
     @get:Query("SELECT * FROM note_table ORDER BY priority DESC")
     val allNotes: LiveData<List<Note>>
 
