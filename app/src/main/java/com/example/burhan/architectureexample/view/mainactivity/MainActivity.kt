@@ -36,7 +36,8 @@ class MainActivity : AppCompatActivity(), NoteAdapter.OnCheckChanged, NoteAdapte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mainActivityComponent = MainApplication.applicationComponent.plus(MainActivityModule(this))
+        mainActivityComponent = MainApplication.applicationComponent.plus(MainActivityModule())
+        noteViewModel =  ViewModelProviders.of(this).get(NoteViewModel::class.java)
 
         addNoteButton.setOnClickListener {
             val intent = Intent(this@MainActivity, AddEditNote::class.java)
