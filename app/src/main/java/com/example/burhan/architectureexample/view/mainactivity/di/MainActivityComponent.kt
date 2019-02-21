@@ -1,6 +1,6 @@
 package com.example.burhan.architectureexample.view.mainactivity.di
 
-import com.example.burhan.architectureexample.view.mainactivity.MainActivity
+import com.example.burhan.architectureexample.repository.NoteRepository
 import com.example.burhan.architectureexample.view.mainactivity.NoteViewModel
 import dagger.Subcomponent
 

@@ -23,20 +23,17 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), NoteAdapter.OnCheckChanged, NoteAdapter.OnItemClick {
 
-    @Inject
-    lateinit var noteViewModel: NoteViewModel
-
     companion object {
-        lateinit var mainActivityComponent: MainActivityComponent
         const val ADD_NOTE_REQUEST = 1
         const val EDIT_NOTE_REQUEST = 2
     }
+
+    lateinit var noteViewModel: NoteViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mainActivityComponent = MainApplication.applicationComponent.plus(MainActivityModule())
         noteViewModel =  ViewModelProviders.of(this).get(NoteViewModel::class.java)
 
         addNoteButton.setOnClickListener {
